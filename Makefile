@@ -1,17 +1,17 @@
 VERSION=1.4.0
 DATE=$(shell date)
-BOOTSTRAP = ./bootstrap.css
-BOOTSTRAP_MIN = ./bootstrap.min.css
+BOOTSTRAP = ../../public/stylesheets/bootstrap.css
+BOOTSTRAP_MIN = ../../public/stylesheets/bootstrap.min.css
 BOOTSTRAP_LESS = ./lib/bootstrap.less
-LESS_COMPRESSOR ?= `which lessc`
+LESS_COMPRESSOR ?= '/usr/local/bin/lessc'
 UGLIFY_JS ?= `which uglifyjs`
 WATCHR ?= `which watchr`
 
 build:
 	@@if test ! -z ${LESS_COMPRESSOR}; then \
 		sed -e 's/@VERSION/'"v${VERSION}"'/' -e 's/@DATE/'"${DATE}"'/' <${BOOTSTRAP_LESS} >${BOOTSTRAP_LESS}.tmp; \
-		lessc ${BOOTSTRAP_LESS}.tmp > ${BOOTSTRAP}; \
-		lessc ${BOOTSTRAP_LESS}.tmp > ${BOOTSTRAP_MIN} --compress; \
+		${LESS_COMPRESSOR} ${BOOTSTRAP_LESS}.tmp > ${BOOTSTRAP}; \
+		${LESS_COMPRESSOR} ${BOOTSTRAP_LESS}.tmp > ${BOOTSTRAP_MIN} --compress; \
 		rm -f ${BOOTSTRAP_LESS}.tmp; \
 		echo "Bootstrap successfully built! - `date`"; \
 	else \
@@ -38,7 +38,7 @@ js/min:
 watch:
 	@@if test ! -z ${WATCHR}; then \
 	  echo "Watching less files..."; \
-	  watchr -e "watch('lib/.*\.less') { system 'make' }"; \
+	  watchr -d -e "watch('lib/.*\.less') { system 'make' }"; \
 	else \
 		echo "You must have the watchr installed in order to watch Bootstrap less files."; \
 		echo "You can install it by running: gem install watchr"; \
